@@ -336,14 +336,16 @@ for (let i = 0; i < settings.Welcome.token.length; i++) {
                         client.removeListener(Discord.Events.MessageCreate, handler);
                         resolve('');
                     }, settings.Register.textTimeout);
-                    client.on(Discord.Events.MessageCreate, (msg: Discord.Message) => {
+
+                    const handler = (msg: Discord.Message) => {
                         if (msg.author.id === member.id && msg.channelId === settings.Register.registerChannel) {
                             clearTimeout(timeout);
                             client.removeListener(Discord.Events.MessageCreate, handler);
                             msg.delete().catch(() => {});
                             resolve(msg.content.trim());
                         }
-                    });
+                    };
+                    client.on(Discord.Events.MessageCreate, handler);
                 });
 
                 prompt.delete().catch(() => {});
